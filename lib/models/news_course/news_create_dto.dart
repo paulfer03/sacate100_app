@@ -1,41 +1,10 @@
-// lib/models/news_course/new_course_dto.dart
-
-import 'materia_type.dart';
-
-/// DTO para representar un recurso en lista (nueva materia)
-class NewCourseDto {
-  final int id;
-  final String title;
-  final String url;
-  final String description;
-  final MateriaType materiaType;
-
-  NewCourseDto({
-    required this.id,
-    required this.title,
-    required this.url,
-    required this.description,
-    required this.materiaType,
-  });
-
-  factory NewCourseDto.fromJson(Map<String, dynamic> json) {
-    return NewCourseDto(
-      id: json['id'] as int,
-      title: json['title'] as String,
-      url: json['url'] as String,
-      description: json['description'] as String,
-      materiaType: MateriaType.fromApiString(json['category'] as String),
-    );
-  }
-}
-
 
 // lib/services/new_course_service.dart
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/news_course/new_course_dto.dart';
-import '../models/news_course/new_course_create_dto.dart';
+import 'package:sacate100_app/models/models/news_course/new_course_create_dto.dart';
 import '../models/news_course/new_course_detail_dto.dart';
 import 'auth_service.dart';
 
