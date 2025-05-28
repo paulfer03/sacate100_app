@@ -3,11 +3,12 @@
 import 'package:flutter/material.dart';
 import '../models/news_post/news_post_dto.dart';
 import '../models/news_post/news_post_create_dto.dart';
+import '../models/enums/category_type.dart';
 import '../services/post_service.dart';
 import 'user_profile_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  const AdminHomeScreen({Key? key}) : super(key: key);
+  const AdminHomeScreen({super.key});
 
   @override
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
@@ -63,14 +64,19 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 email: existing?.email ?? '',
                 whatsAppLink: existing?.whatsAppLink ?? '',
                 imageUrl: existing?.imageUrl ?? '',
-                category: existing?.category ?? CategoryType.others,
+                category: existing?.category is CategoryType ? existing!.category as CategoryType : CategoryType.others,
               );
               try {
-                if (existing == null) await _postService.createPost(dto);
-                else await _postService.updatePost(existing.id, dto);
+                if (existing == null) {
+                  await _postService.createPost(dto);
+                } else {
+                  await _postService.updatePost(existing.id, dto);
+                }
+                if (!context.mounted) return;
                 Navigator.pop(ctx, true);
               } catch (e) {
-                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: \$e')));
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e')));
               }
             },
             child: const Text('Guardar'),
@@ -100,7 +106,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         final success = await _postService.deletePost(id);
         if (success) _loadPosts();
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: \$e')));
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -148,7 +155,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Error: \${snapshot.error}'));
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
           final posts = snapshot.data!;
           if (posts.isEmpty) {

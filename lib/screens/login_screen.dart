@@ -9,7 +9,7 @@ import 'user_home_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -31,11 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
       _error = null;
     });
     final dto = UserLoginDto(
-      username: _usernameCtrl.text.trim(),
+      email: _usernameCtrl.text.trim(),
       password: _passwordCtrl.text,
     );
     try {
-      final success = await _authService.login(dto);
+      final success = await _authService.login(dto.email, dto.password);
       if (!success) throw Exception('Invalid credentials');
 
       final UserInfoDto? user = await _authService.getCurrentUser();
@@ -77,7 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [theme.primaryColor.withOpacity(0.2), Colors.white],
+            colors: [
+                      theme.primaryColor.withAlpha((0.2 * 255).toInt()),
+                      Colors.white,
+                    ],
           ),
         ),
         child: Center(

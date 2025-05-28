@@ -1,14 +1,14 @@
 // lib/screens/post_detail_screen.dart
 
 import 'package:flutter/material.dart';
-import '../services/post_service.dart';
 import '../models/news_post/news_post_detail_dto.dart';
-import 'post_form_screen.dart';
+import '../screens/post_form_screen.dart';
+import '../services/post_service.dart';
 
 class PostDetailScreen extends StatefulWidget {
   /// Recibe el ID de la publicación a mostrar
   final int postId;
-  const PostDetailScreen({Key? key, required this.postId}) : super(key: key);
+  const PostDetailScreen({super.key, required this.postId});
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -32,6 +32,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       ),
     );
     if (result is String) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result)),
       );
@@ -128,7 +129,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   children: [
                     const Icon(Icons.category, size: 16),
                     const SizedBox(width: 4),
-                    Text(post.category.name.toUpperCase()),
+                    Text(post.category.toUpperCase()),
                     const SizedBox(width: 24),
                     const Icon(Icons.calendar_today, size: 16),
                     const SizedBox(width: 4),
@@ -154,12 +155,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   children: [
                     const Icon(Icons.email, size: 16),
                     const SizedBox(width: 8),
-                    Text(post.email),
+                    Text(post.email ?? 'Sin email'),
                   ],
                 ),
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.whatsapp),
                   label: const Text('Chatear por WhatsApp'),
                   onPressed: () {
                     // Lógica para abrir post.whatsAppLink
